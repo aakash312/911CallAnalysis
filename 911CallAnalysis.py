@@ -24,13 +24,18 @@ class CallAnalyis_911:
       except:
         print("exploratoryAnalysis function error")
 
-    def vizFunction(self):
-        pass
+    def featurCreation(self):
+        try:
+            self.df['Reason'] = self.df['title'].apply(lambda title: title.split(':')[0])
+            print('The most common reasons for 911 calls is: \n{}'.format(self.df['Reason'].value_counts()))
+        except:
+            print("featureCreation function error")
+
 
 
 if __name__ == '__main__':
     __911__= CallAnalyis_911(df = pd.read_csv('911.csv'))
     # __911__.infoCheck()
     __911__.exploratoryAnalysis()
-    __911__.vizFunction()
+    __911__.featurCreation()
 
