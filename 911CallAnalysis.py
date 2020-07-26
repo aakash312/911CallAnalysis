@@ -11,7 +11,6 @@ class CallAnalyis_911:
 
     def infoCheck(self):
         print(self.df.info())
-        print('Hello world')
 
     def exploratoryAnalysis(self):
       try:
