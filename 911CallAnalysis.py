@@ -24,9 +24,13 @@ class CallAnalyis_911:
       except:
         print("exploratoryAnalysis function error")
 
+    def vizFunction(self):
+        pass
+
 
 if __name__ == '__main__':
     __911__= CallAnalyis_911(df = pd.read_csv('911.csv'))
     # __911__.infoCheck()
     __911__.exploratoryAnalysis()
+    --911__.vizFunction()
 
