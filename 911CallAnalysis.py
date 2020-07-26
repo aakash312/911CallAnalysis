@@ -15,10 +15,10 @@ class CallAnalyis_911:
     def exploratoryAnalysis(self):
       try:
         #Top 5 zipcodes
-        print('Top 5 Zipcodes are : ')
-        print(self.df['zip'].value_counts().head(5))
+        print('Top 5 Zipcodes are : \n{}'.format(self.df['zip'].value_counts().head(5)))
         # Top 5 Townships
-        print("Top 5 Townships are :{}".format(self.df['twp'].value_counts().head(5)))
+        print("Top 5 Townships are :\n{}".format(self.df['twp'].value_counts().head(5)))
+        # No. of Unique Titles
         print("Number of unique Titles are :{}".format(self.df['title'].nunique()))
 
       except:
@@ -32,5 +32,5 @@ if __name__ == '__main__':
     __911__= CallAnalyis_911(df = pd.read_csv('911.csv'))
     # __911__.infoCheck()
     __911__.exploratoryAnalysis()
-    --911__.vizFunction()
+    __911__.vizFunction()
 
