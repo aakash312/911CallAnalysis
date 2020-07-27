@@ -53,7 +53,7 @@ class CallAnalyis_911:
             print(type(self.df['timeStamp'].iloc[0]))
             self.df['timeStamp'] = pd.to_datetime(self.df['timeStamp'])
             # Set up the matplotlib figure
-            f, axes = plt.subplots(2, 2, figsize=(25, 25))
+            f, axes = plt.subplots(3, 3, figsize=(25, 25))
             sns.despine(left=True)
 
             #Hourly Analysis
@@ -70,13 +70,29 @@ class CallAnalyis_911:
             self.df['Day of Week'] = self.df['timeStamp'].apply(lambda time: time.dayofweek)
             dmap1 = {0: 'Mon', 1: 'Tue', 2: 'Wed', 3: 'Thu', 4: 'Fri', 5: 'Sat', 6: 'Sun'}
             self.df['Day of Week'] = self.df['Day of Week'].map(dmap1)
-            sns.countplot(x='Day of Week', data=self.df, hue=self.df['Reason'], palette='magma',ax=axes[1, 0])
+            sns.countplot(x='Day of Week', data=self.df, hue=self.df['Reason'], palette='magma',ax=axes[0, 2])
 
-            plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-            plt.savefig('/Users/aakash/PycharmProjects/911CallAnalysis/TimeBasedAnalysis.pdf')
 
+            self.df['Date'] = self.df['timeStamp'].apply(lambda t: t.date())
+            self.df.groupby('Date').count()['twp'].plot(ax=axes[1, 0])
+
+            self.df[self.df['Reason'] == 'Traffic'].groupby('Date').count()['twp'].plot(ax=axes[1,1],color='#E89275')
+            plt.title('Traffic')
+
+            self.df[self.df['Reason'] == 'Fire'].groupby('Date').count()['twp'].plot(ax=axes[1,2], color='#A74779')
+            plt.title('Fire')
+
+            self.df[self.df['Reason'] == 'EMS'].groupby('Date').count()['twp'].plot(ax=axes[2,0],color='#4E1F6F')
+            plt.title('EMS')
+            plt.tight_layout()
+            plt.show()
+            # Generating pdf
+            # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
+            # plt.savefig('/Users/aakash/PycharmProjects/911CallAnalysis/TimeBasedAnalysis.pdf')
         except:
             print("timeRelated function error")
+
 
 
 if __name__ == '__main__':
