@@ -2,15 +2,19 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import geopandas as gpd
+from shapely.geometry import Point, Polygon
+import pyproj
 
 
 class CallAnalyis_911:
 
-    def __init__(self,df):
+    def __init__(self,df,map_df):
         '''
         Init function
         '''
         self.df =df
+        self.map_df=map_df
 
 
     def exploratoryAnalysis(self):
@@ -79,10 +83,10 @@ class CallAnalyis_911:
             self.df[self.df['Reason'] == 'Traffic'].groupby('Date').count()['twp'].plot(ax=axes[1,1],color='#E89275')
             plt.title('Traffic')
 
-            self.df[self.df['Reason'] == 'Fire'].groupby('Date').count()['twp'].plot(ax=axes[1,2], color='#A74779')
+            self.df[self.df['Reason'] == 'Fire'].groupby('Date').count()['twp'].plot(ax=axes[1,1], color='#A74779')
             plt.title('Fire')
 
-            self.df[self.df['Reason'] == 'EMS'].groupby('Date').count()['twp'].plot(ax=axes[2,0],color='#4E1F6F')
+            self.df[self.df['Reason'] == 'EMS'].groupby('Date').count()['twp'].plot(ax=axes[1,1],color='#4E1F6F')
             plt.title('EMS')
             plt.tight_layout()
             plt.show()
@@ -94,10 +98,28 @@ class CallAnalyis_911:
             print("timeRelated function error")
 
 
+    def geoAnalysis(self):
+        try:
+
+            crs = pyproj.CRS("+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs")
+            # zip x and y coordinates into single feature
+            geometry = [Point(xy) for xy in zip(self.df['lng'], self.df['lat'])]
+            # create GeoPandas dataframe
+            geo_df = gpd.GeoDataFrame(self.df,crs =crs,geometry=geometry)
+            # create figure and axes, assign to subplot
+            fig, axw = plt.subplots(figsize=(15, 15))
+            # add .shp mapfile to axes
+            self.df.plot(ax=axw, alpha=0.4, color='grey')
+            geo_df.plot(column='Reason', ax = axw, alpha = 0.5, legend = True, markersize = 10)
+            plt.show()
+        except:
+            print("Error in geoAnalyis")
 
 if __name__ == '__main__':
-    __911__= CallAnalyis_911(df = pd.read_csv('911.csv'))
+    __911__= CallAnalyis_911(df = pd.read_csv('911.csv'),map_df = gpd.read_file('shp/cb_2018_us_aiannh_500k.shp'))
     # __911__.exploratoryAnalysis()
     __911__.featureCreation()
-    __911__.timeAnalysis()
+    # __911__.timeAnalysis()
+    __911__.geoAnalysis()
+
 
